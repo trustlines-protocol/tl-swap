@@ -1,6 +1,5 @@
-import { gql } from "@apollo/client";
+import { gql } from "graphql-request";
 
-// See more example queries on https://thegraph.com/explorer/subgraph/paulrberg/create-eth-app
 const GET_TRANSFERS = gql`
   {
     transfers(first: 10) {
