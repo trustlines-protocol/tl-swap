@@ -1,7 +1,7 @@
 import React from "react";
 
 import { NavBar } from "./components/nav-bar";
-import CommitBox from "./components/CommitBox";
+import { CommitBox } from "./components/commit-box";
 
 import { useStore } from "./store";
 
