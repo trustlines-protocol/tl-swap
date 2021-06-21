@@ -22,6 +22,7 @@ test("render CurrencyNetworkSelect with networks", async () => {
       onChangeNetwork={(changedNetworkAddress) =>
         console.log(changedNetworkAddress)
       }
+      isLoading={false}
     />
   );
 

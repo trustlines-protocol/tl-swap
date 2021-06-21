@@ -1,0 +1,209 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "CommitmentExpiredEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "TLMoneyAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "CommitmentInitiatedEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "hash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "TLMoneyAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "TLNetwork",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "initiatorEthAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "EthAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "CommitmentSuccessEvent",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "CommitmentsMap",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "initiator",
+        "type": "address"
+      },
+      {
+        "internalType": "uint64",
+        "name": "endTimeStamp",
+        "type": "uint64"
+      },
+      {
+        "internalType": "address payable",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint64",
+        "name": "TLMoneyAmount",
+        "type": "uint64"
+      },
+      {
+        "internalType": "address",
+        "name": "TLNetwork",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "initiatorEthAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "EthAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_path",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint64",
+        "name": "_maxFee",
+        "type": "uint64"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_extraData",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_proof",
+        "type": "bytes32"
+      }
+    ],
+    "name": "claim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_TLSender",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_TLRecipient",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_TLNetwork",
+        "type": "address"
+      },
+      {
+        "internalType": "uint64",
+        "name": "_TLMoneyAmount",
+        "type": "uint64"
+      },
+      {
+        "internalType": "address",
+        "name": "_InitiatorEthAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_EthAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint64",
+        "name": "_lockTimeSec",
+        "type": "uint64"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "commit",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_hash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "removeCommitment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

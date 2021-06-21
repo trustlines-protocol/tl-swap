@@ -12,6 +12,7 @@ function ConnectETHWalletButton() {
 
   return (
     <button
+      className="border px-4 py-2"
       onClick={async () => {
         if (provider) {
           await logoutOfWeb3Modal();
