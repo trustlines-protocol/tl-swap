@@ -2,7 +2,7 @@ import { Contract } from "@ethersproject/contracts";
 // @ts-ignore
 import { abis, addresses } from "@project/contracts";
 
-export async function populateClaimTx(params: {
+export async function populateCommitTx(params: {
   yourTLAddress: string;
   counterpartyTLAddress: string;
   currencyNetworkAddress: string;
@@ -13,7 +13,7 @@ export async function populateClaimTx(params: {
   hashedSecret: string;
 }) {
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap);
-  const unsignedClaimTx = await tlSwapContract.populateTransaction.commit(
+  const unsignedCommitTx = await tlSwapContract.populateTransaction.commit(
     params.yourTLAddress,
     params.counterpartyTLAddress,
     params.currencyNetworkAddress,
@@ -23,8 +23,7 @@ export async function populateClaimTx(params: {
     params.claimPeriodInSec,
     params.hashedSecret
   );
-  unsignedClaimTx.from = params.yourTLAddress;
+  unsignedCommitTx.from = params.yourTLAddress;
 
-  console.log(unsignedClaimTx);
-  return unsignedClaimTx;
+  return unsignedCommitTx;
 }
