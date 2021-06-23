@@ -12,6 +12,21 @@ function App() {
   const activeNavBarSwitchItem = useStore(
     (state) => state.activeNavBarSwitchItem
   );
+  const setActiveNavBarSwitchItem = useStore(
+    (state) => state.setActiveNavBarSwitchItem
+  );
+  const setActiveCommitBoxSwitchItem = useStore(
+    (state) => state.setActiveCommitBoxSwitchItem
+  );
+
+  React.useEffect(() => {
+    const url = new URL(window.location.href);
+
+    if (url.pathname === "/commit") {
+      setActiveNavBarSwitchItem("commit");
+      setActiveCommitBoxSwitchItem("ethToTl");
+    }
+  }, []);
 
   return (
     <div>

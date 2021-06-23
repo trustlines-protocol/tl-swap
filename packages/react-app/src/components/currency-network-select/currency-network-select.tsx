@@ -25,7 +25,10 @@ function CurrencyNetworkSelect(props: Props) {
           <option>Loading...</option>
         ) : (
           props.currencyNetworks.map((currencyNetwork) => (
-            <option key={currencyNetwork.address}>
+            <option
+              key={currencyNetwork.address}
+              value={currencyNetwork.address}
+            >
               {`${currencyNetwork.name} (${currencyNetwork.abbreviation})`}
             </option>
           ))

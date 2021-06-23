@@ -1,6 +1,9 @@
 import { Contract } from "@ethersproject/contracts";
+import { JsonRpcProvider } from "@ethersproject/providers";
 // @ts-ignore
 import { abis, addresses } from "@project/contracts";
+
+import config from "../config";
 
 export async function populateCommitTx(params: {
   yourTLAddress: string;
@@ -26,4 +29,12 @@ export async function populateCommitTx(params: {
   unsignedCommitTx.from = params.yourTLAddress;
 
   return unsignedCommitTx;
+}
+
+export async function getCommitment(hashedSecret: string) {
+  const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
+  const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
+
+  const commitment = await tlSwapContract.CommitmentsMap(hashedSecret);
+  return commitment;
 }

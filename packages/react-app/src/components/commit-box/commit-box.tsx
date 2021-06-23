@@ -2,6 +2,7 @@ import React from "react";
 
 import { CommitBoxSwitchButtonBar } from "../commit-box-switch-button-bar";
 import { CommitBoxTlToEth } from "../commit-box-tl-to-eth";
+import { CommitBoxEthToTl } from "../commit-box-eth-to-tl";
 
 import { useStore } from "../../store";
 
@@ -19,7 +20,11 @@ function CommitBox() {
         "
       >
         <CommitBoxSwitchButtonBar />
-        {activeCommitBoxSwitchItem === "tlToEth" ? <CommitBoxTlToEth /> : null}
+        {activeCommitBoxSwitchItem === "tlToEth" ? (
+          <CommitBoxTlToEth />
+        ) : (
+          <CommitBoxEthToTl />
+        )}
       </div>
     </div>
   );
