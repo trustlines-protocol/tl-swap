@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Button } from "../button";
+
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import { useStore } from "../../store";
 
@@ -11,8 +13,8 @@ function ConnectETHWalletButton() {
   const connectedETHAddress = useStore((state) => state.connectedETHAddress);
 
   return (
-    <button
-      className="border px-4 py-2"
+    <Button
+      buttonType="primary"
       onClick={async () => {
         if (provider) {
           await logoutOfWeb3Modal();
@@ -22,7 +24,7 @@ function ConnectETHWalletButton() {
       }}
     >
       {connectedETHAddress ? "Disconnect" : "Connect"} Wallet
-    </button>
+    </Button>
   );
 }
 

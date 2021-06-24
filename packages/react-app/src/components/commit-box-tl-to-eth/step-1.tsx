@@ -4,6 +4,7 @@ import { ConnectETHWalletButton } from "../connect-eth-wallet-button";
 import { CurrencyNetworkSelect } from "../currency-network-select";
 import { LabeledInput } from "../labeled-input";
 import { QrCodeScannerModal } from "../qr-code-scanner-modal";
+import { Button } from "../button";
 
 import { useCurrencyNetworks } from "../../hooks/useCurrencyNetworks";
 import { useStore } from "../../store";
@@ -94,12 +95,9 @@ function Step1(props: {
           setQrCodeScannerContext("counterpartyTLAddress");
         }}
       />
-      <button
-        className="border w-full px-4 py-2 bg-green-200"
-        onClick={props.onClickContinue}
-      >
+      <Button buttonType="primary" onClick={props.onClickContinue} fullWidth>
         Continue
-      </button>
+      </Button>
     </>
   );
 }

@@ -5,13 +5,15 @@ import { ConnectETHWalletButton } from "../connect-eth-wallet-button";
 
 function NavBar() {
   return (
-    <nav className="container mx-auto h-10 flex flex-row items-center justify-between">
-      <div className="font-semibold flex-1">TL SWAP</div>
-      <div className="flex-1 flex justify-center">
-        <NavBarSwitchButtonBar />
-      </div>
-      <div className="flex-1 flex justify-end">
-        <ConnectETHWalletButton />
+    <nav className="bg-white shadow-sm">
+      <div className="container mx-auto h-20 flex flex-row items-center justify-between">
+        <div className="font-semibold flex-1">TL SWAP</div>
+        <div className="flex-1 flex justify-center">
+          <NavBarSwitchButtonBar />
+        </div>
+        <div className="flex-1 flex justify-end">
+          <ConnectETHWalletButton />
+        </div>
       </div>
     </nav>
   );

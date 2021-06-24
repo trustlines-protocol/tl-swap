@@ -5,6 +5,8 @@ import { hexlify } from "@ethersproject/bytes";
 import { parseEther } from "@ethersproject/units";
 import { keccak256 } from "@ethersproject/keccak256";
 
+import { Button } from "../button";
+
 import { getDecimals, parseValue } from "../../api/tl-lib";
 import { setCommitment } from "../../api/local-storage";
 import { populateCommitTx } from "../../utils/tl-swap";
@@ -39,6 +41,13 @@ function Step3(props: {
         ...props,
         secret,
         hashedSecret,
+      });
+
+      console.log({
+        ...props,
+        hashedSecret,
+        tlAmount: parsedTLAmount.toString(),
+        ethAmount: parsedETHAmount.toString(),
       });
 
       const unsignedCommitTx = await populateCommitTx({
@@ -78,7 +87,9 @@ function Step3(props: {
           {shareLink}
         </div>
       </>
-      <button onClick={handleClickCopy}>Copy Link</button>
+      <Button buttonType="primary" onClick={handleClickCopy} fullWidth>
+        Copy Link
+      </Button>
     </>
   );
 }
