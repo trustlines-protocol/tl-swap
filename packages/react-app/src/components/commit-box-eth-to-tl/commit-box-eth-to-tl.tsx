@@ -1,8 +1,8 @@
 import React from "react";
-import { formatEther, parseEther } from "@ethersproject/units";
 
 import { LabeledInput } from "../labeled-input";
 import { ConnectETHWalletButton } from "../connect-eth-wallet-button";
+import { Button } from "../button";
 
 import useWeb3Modal from "../../hooks/useWeb3Modal";
 import { getCommitment } from "../../utils/tl-swap";
@@ -13,6 +13,8 @@ function CommitBoxEthToTl() {
   const [initiatorETHAddress, setInitiatorETHAddress] = React.useState("");
   const [hashedSecret, setHashedSecret] = React.useState("");
   const [claimPeriodInSec, setClaimPeriodInSec] = React.useState("");
+  const [isCommitting, setIsCommitting] = React.useState(false);
+  const [commitTxHash, setCommitTxHash] = React.useState("");
 
   const { provider } = useWeb3Modal({ autoLoad: true });
 
@@ -34,6 +36,8 @@ function CommitBoxEthToTl() {
 
   const handleClickCommit = async () => {
     try {
+      setIsCommitting(true);
+
       if (!provider) {
         throw new Error("No wallet connected");
       }
@@ -52,11 +56,7 @@ function CommitBoxEthToTl() {
 
       const commitment = await getCommitment(hashedSecret);
 
-      console.log(commitment);
-
       const requestedEthAmount = String(commitment.EthAmount);
-
-      console.log(formatEther(requestedEthAmount));
 
       const txResponse = await commit(
         {
@@ -67,10 +67,15 @@ function CommitBoxEthToTl() {
         },
         provider.getSigner()
       );
-
-      console.log({ txResponse });
+      const txReceipt = await txResponse.wait();
+      setCommitTxHash(txReceipt.transactionHash);
+      setClaimPeriodInSec("");
+      setInitiatorETHAddress("");
+      setHashedSecret("");
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsCommitting(false);
     }
   };
 
@@ -97,9 +102,27 @@ function CommitBoxEthToTl() {
         min={0}
       />
       {connectedETHAddress ? (
-        <button onClick={handleClickCommit}>Commit</button>
+        <Button
+          buttonType="primary"
+          onClick={handleClickCommit}
+          disabled={isCommitting}
+          fullWidth
+        >
+          {isCommitting ? "Committing..." : "Commit"}
+        </Button>
       ) : (
         <ConnectETHWalletButton />
+      )}
+      {commitTxHash && (
+        <div className="bg-green-100 p-4 text-green-700 w-full text-center">
+          Successfully committed!{" "}
+          <a
+            className="underline"
+            href={`https://goerli.etherscan.io/tx/${commitTxHash}`}
+          >
+            View on Etherscan
+          </a>
+        </div>
       )}
     </>
   );
