@@ -3,6 +3,7 @@ import Modal from "react-modal";
 
 import { NavBar } from "./components/nav-bar";
 import { CommitBox } from "./components/commit-box";
+import { ClaimBox } from "./components/claim-box";
 
 import { useStore } from "./store";
 
@@ -32,6 +33,7 @@ function App() {
     <div className="bg-gray-100 h-screen">
       <NavBar />
       {activeNavBarSwitchItem === "commit" ? <CommitBox /> : null}
+      {activeNavBarSwitchItem === "claim" ? <ClaimBox /> : null}
     </div>
   );
 }

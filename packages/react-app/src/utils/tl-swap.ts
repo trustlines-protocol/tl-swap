@@ -2,6 +2,7 @@ import { Contract } from "@ethersproject/contracts";
 import { JsonRpcProvider } from "@ethersproject/providers";
 // @ts-ignore
 import { abis, addresses } from "@project/contracts";
+import {arrayify} from "@ethersproject/bytes";
 
 import config from "../config";
 
@@ -15,7 +16,8 @@ export async function populateCommitTx(params: {
   yourETHAddress: string;
   hashedSecret: string;
 }) {
-  const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap);
+  const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
+  const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
   const unsignedCommitTx = await tlSwapContract.populateTransaction.commit(
     params.yourTLAddress,
     params.counterpartyTLAddress,
@@ -31,10 +33,36 @@ export async function populateCommitTx(params: {
   return unsignedCommitTx;
 }
 
-export async function getCommitment(hashedSecret: string) {
+export async function generateClaimTx(params: {
+  path: Array<string>,
+  maxFee: string,
+  extraData: string,
+  proof: string
+}) {
   const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
 
+  console.log('claaaaim',  params.path,
+      params.maxFee,
+      arrayify("0x0", {hexPad:"right"}),
+      arrayify(params.proof, {hexPad:"right"}))
+  const unsignedClaimTx = await tlSwapContract.populateTransaction.claim(
+      params.path,
+      params.maxFee,
+      arrayify("0x0", {hexPad:"right"}),
+      arrayify(params.proof, {hexPad:"right"})
+  );
+
+  return unsignedClaimTx
+}
+
+
+export async function getCommitment(hashedSecret: string) {
+  const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
+  console.log('cofnig', config)
+  const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
+
   const commitment = await tlSwapContract.CommitmentsMap(hashedSecret);
+  console.log('commitments map', commitment)
   return commitment;
 }
