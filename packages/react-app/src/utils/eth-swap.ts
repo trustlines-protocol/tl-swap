@@ -1,9 +1,7 @@
 import { Contract } from "@ethersproject/contracts";
-import { JsonRpcProvider, JsonRpcSigner } from "@ethersproject/providers";
+import { JsonRpcSigner, TransactionResponse } from "@ethersproject/providers";
 // @ts-ignore
 import { abis, addresses } from "@project/contracts";
-
-import config from "../config";
 
 export async function commit(
   params: {
@@ -15,8 +13,7 @@ export async function commit(
   signer: JsonRpcSigner
 ) {
   const ethSwapContract = new Contract(addresses.ethSwap, abis.ethSwap, signer);
-  console.log({ params });
-  const txResponse = await ethSwapContract.secretLock(
+  const txResponse: TransactionResponse = await ethSwapContract.secretLock(
     params.claimPeriodInSec,
     params.hashedSecret,
     params.initiatorEthAddress,

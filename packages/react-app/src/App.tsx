@@ -29,7 +29,7 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-gray-100 h-screen">
       <NavBar />
       {activeNavBarSwitchItem === "commit" ? <CommitBox /> : null}
     </div>

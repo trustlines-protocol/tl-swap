@@ -1,6 +1,7 @@
 import React from "react";
 
 import { LabeledInput } from "../labeled-input";
+import { Button } from "../button";
 
 function Step2(props: {
   tlAmount: string;
@@ -39,18 +40,12 @@ function Step2(props: {
         min={0}
       />
       <div className="flex flex-row gap-x-2 w-full">
-        <button
-          className="border w-full px-4 py-2 flex-1"
-          onClick={props.onClickBack}
-        >
+        <Button onClick={props.onClickBack} fullWidth>
           Back
-        </button>
-        <button
-          className="border w-full px-4 py-2 flex-1"
-          onClick={props.onClickContinue}
-        >
+        </Button>
+        <Button buttonType="primary" onClick={props.onClickContinue} fullWidth>
           Continue
-        </button>
+        </Button>
       </div>
     </>
   );
