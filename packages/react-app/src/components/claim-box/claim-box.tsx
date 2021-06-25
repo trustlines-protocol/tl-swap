@@ -2,7 +2,7 @@ import React from "react";
 
 import { ClaimBoxSwitchButtonBar } from "../claim-box-switch-button-bar";
 import { ClaimBoxTl } from "../claim-box-tl";
-import { ClaimBoxEthToTl } from "../claim-box-eth-to-tl";
+import { ClaimBoxEth } from "../claim-box-eth";
 
 import { useStore } from "../../store";
 
@@ -11,7 +11,6 @@ function ClaimBox() {
     (state) => state.activeClaimBoxSwitchItem
   );
 
-  console.log('activeClaimBoxSwitchItem', activeClaimBoxSwitchItem)
   return (
     <div className="container mx-auto">
       <div
@@ -21,11 +20,7 @@ function ClaimBox() {
         "
       >
         <ClaimBoxSwitchButtonBar />
-        {activeClaimBoxSwitchItem === "TL" ? (
-          <ClaimBoxTl />
-        ) : (
-          <ClaimBoxEthToTl />
-        )}
+        {activeClaimBoxSwitchItem === "TL" ? <ClaimBoxTl /> : <ClaimBoxEth />}
       </div>
     </div>
   );

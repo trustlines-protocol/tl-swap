@@ -24,3 +24,12 @@ export async function commit(
 
   return txResponse;
 }
+
+export async function claim(secret: string, signer: JsonRpcSigner) {
+  const ethSwapContract = new Contract(addresses.ethSwap, abis.ethSwap, signer);
+  const txResponse: TransactionResponse = await ethSwapContract.secretProof(
+    secret
+  );
+
+  return txResponse;
+}
