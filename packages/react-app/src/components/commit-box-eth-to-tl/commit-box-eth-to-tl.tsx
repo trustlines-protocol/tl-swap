@@ -119,6 +119,8 @@ function CommitBoxEthToTl() {
           <a
             className="underline"
             href={`https://goerli.etherscan.io/tx/${commitTxHash}`}
+            target="_blank"
+            rel="noreferrer"
           >
             View on Etherscan
           </a>
