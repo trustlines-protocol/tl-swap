@@ -42,10 +42,6 @@ export async function generateClaimTx(params: {
   const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
 
-  console.log('claaaaim',  params.path,
-      params.maxFee,
-      arrayify("0x0", {hexPad:"right"}),
-      arrayify(params.proof, {hexPad:"right"}))
   const unsignedClaimTx = await tlSwapContract.populateTransaction.claim(
       params.path,
       params.maxFee,
@@ -59,10 +55,9 @@ export async function generateClaimTx(params: {
 
 export async function getCommitment(hashedSecret: string) {
   const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
-  console.log('cofnig', config)
+
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
 
   const commitment = await tlSwapContract.CommitmentsMap(hashedSecret);
-  console.log('commitments map', commitment)
   return commitment;
 }

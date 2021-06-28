@@ -12,7 +12,6 @@ function ClaimBoxTl() {
     const [secret, setSecret] = useState("")
     const [path, setPath] = useState<Array<string>>([])
 
-    console.log('current step insdex', currentStepIndex)
     if (currentStepIndex === 0) {
         return (
             <Step1

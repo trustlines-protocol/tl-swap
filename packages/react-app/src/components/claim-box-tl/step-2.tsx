@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 
 import {LabeledInput} from "../labeled-input";
+import {isAddress} from "@ethersproject/address"
 import {hexlify} from "@ethersproject/bytes";
 import {randomBytes} from "@ethersproject/random";
 import {keccak256} from "@ethersproject/keccak256";
@@ -12,6 +13,15 @@ import {ICommitment} from "../../api/types";
 import {commit} from "../../utils/eth-swap";
 import {useQuery} from "react-query";
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+const isExistingCommitment = (commitment: ICommitment | null): boolean => {
+    if (commitment) {
+        return (commitment.initiator !== ZERO_ADDRESS && commitment.recipient !== ZERO_ADDRESS)
+    }
+
+    return false
+}
+
 function Step2(props: {
     onChangePath: (path: string[]) => void;
     onChangeSecret: (secret: string) => void;
@@ -21,7 +31,7 @@ function Step2(props: {
     onClickContinue: () => void;
 }) {
     const [commitment, setCommitment] = useState<null | ICommitment>(null)
-    const [error, setError] = useState(null)
+    const [error, setError] = useState<null | string>(null)
     const [loading, setLoading] = useState(false)
     const [spendableAmountArgs, setSpendableAmountArgs] = useState<{
         from: string | null,
@@ -35,6 +45,8 @@ function Step2(props: {
 
             try {
                 const contractCommitment: ICommitment = await getCommitment(props.hashedSecret)
+
+                console.log('contract commitment', contractCommitment)
                 setCommitment(contractCommitment)
                 setSpendableAmountArgs({
                     from: contractCommitment.initiator,
@@ -42,7 +54,8 @@ function Step2(props: {
                     network: contractCommitment.TLNetwork
                 })
             } catch (e) {
-                setError(e)
+                let message = "Failed to fetch commitment. Check your hashedSecret. Raw error: " + e.message
+                setError(message)
             }
 
             setLoading(false)
@@ -50,6 +63,10 @@ function Step2(props: {
 
         })();
     }, []);
+
+    console.log("error", error)
+
+    // return null
 
 
     const {data, isLoading, isError} = useQuery(
@@ -59,20 +76,20 @@ function Step2(props: {
             return getSpendableAmountAndPath(spendableAmountArgs.from, spendableAmountArgs.to, spendableAmountArgs.network)
         },
         {
-        enabled: spendableAmountArgs.from !== null,
+        enabled: spendableAmountArgs.from !== null && isAddress(spendableAmountArgs.from),
         }
     )
 
     if(data) {
         props.onChangePath(data.path)
     }
-
-    console.log('commitment', data)
+    //
+    // console.log('commitment', data)
     return (
         <>
             {error && <div className={""}>{error}</div>}
             {loading && !commitment && <div>Loading commitment information.</div>}
-            {!!commitment && (<div>
+            {commitment && isExistingCommitment(commitment) && (<div>
                 <div>
                     from: <strong>{commitment.initiator}</strong>
                     to: <strong>{commitment.recipient}</strong>
@@ -92,23 +109,30 @@ function Step2(props: {
                 <div>
                     TL Network: <strong>{commitment.TLNetwork}</strong>
                 </div>
+
+                {!!commitment && isLoading && (
+                    <div>Looking for a path between the users.</div>
+                )}
+                {!!commitment && data?.capacity > 0 && (
+                    <div>
+                        There is a path between the 2 accounts with capacity of {data.capacity}
+                    </div>
+                )}
+
+                <LabeledInput
+                    id="hashedSecretInput"
+                    label="Enter Secret"
+                    value={props.secret}
+                    onChangeInputValue={props.onChangeSecret}
+                />
             </div>)}
 
-            {!!commitment && isLoading && (
-                <div>Looking for a path between the users.</div>
-            )}
-            {!!commitment && data?.capacity > 0 && (
+            {commitment && !isExistingCommitment(commitment) && (
                 <div>
-                    There is a path between the 2 accounts with capacity of {data.capacity}
+                    We cannot find any commitment for this hash.({props.hashedSecret})
                 </div>
             )}
 
-            <LabeledInput
-                id="hashedSecretInput"
-                label="Enter Secret"
-                value={props.secret}
-                onChangeInputValue={props.onChangeSecret}
-            />
             <div className="flex flex-row gap-x-2 w-full">
                 <button
                     className="border w-full px-4 py-2 flex-1"
@@ -116,12 +140,14 @@ function Step2(props: {
                 >
                     Back
                 </button>
-                <button
-                    className="border w-full px-4 py-2 flex-1"
-                    onClick={props.onClickContinue}
-                >
-                    Claim
-                </button>
+                {!error && (
+                    <button
+                        className="border w-full px-4 py-2 flex-1"
+                        onClick={props.onClickContinue}
+                    >
+                        Claim
+                    </button>
+                )}
             </div>
         </>
     );
