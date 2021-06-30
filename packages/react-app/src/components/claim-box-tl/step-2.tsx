@@ -2,18 +2,14 @@ import React, {useState} from "react";
 
 import {LabeledInput} from "../labeled-input";
 import {isAddress} from "@ethersproject/address"
-import {hexlify} from "@ethersproject/bytes";
-import {randomBytes} from "@ethersproject/random";
-import {keccak256} from "@ethersproject/keccak256";
-import {getDecimals, getSpendableAmountAndPath, parseValue} from "../../api/tl-lib";
-import {parseEther} from "@ethersproject/units";
-import {setCommitment} from "../../api/local-storage";
-import {getCommitment, populateCommitTx} from "../../utils/tl-swap";
+import {getSpendableAmountAndPath} from "../../api/tl-lib";
+import {getCommitment} from "../../utils/tl-swap";
 import {ICommitment} from "../../api/types";
-import {commit} from "../../utils/eth-swap";
 import {useQuery} from "react-query";
+import {ZERO_ADDRESS} from "../../config";
+import {formatEther} from "@ethersproject/units";
 
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
+
 const isExistingCommitment = (commitment: ICommitment | null): boolean => {
     if (commitment) {
         return (commitment.initiator !== ZERO_ADDRESS && commitment.recipient !== ZERO_ADDRESS)
@@ -46,7 +42,6 @@ function Step2(props: {
             try {
                 const contractCommitment: ICommitment = await getCommitment(props.hashedSecret)
 
-                console.log('contract commitment', contractCommitment)
                 setCommitment(contractCommitment)
                 setSpendableAmountArgs({
                     from: contractCommitment.initiator,
@@ -64,10 +59,6 @@ function Step2(props: {
         })();
     }, []);
 
-    console.log("error", error)
-
-    // return null
-
 
     const {data, isLoading, isError} = useQuery(
         ["spend", spendableAmountArgs],
@@ -83,8 +74,7 @@ function Step2(props: {
     if(data) {
         props.onChangePath(data.path)
     }
-    //
-    // console.log('commitment', data)
+
     return (
         <>
             {error && <div className={""}>{error}</div>}
@@ -103,7 +93,7 @@ function Step2(props: {
                 </div>
 
                 <div>
-                    Eth Amount: <strong>{String(commitment.EthAmount)}</strong>
+                    Eth Amount: <strong>{String(formatEther(commitment.EthAmount))}</strong>
                 </div>
 
                 <div>

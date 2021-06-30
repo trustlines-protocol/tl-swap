@@ -4,8 +4,6 @@ import {Step1} from "./step-1";
 import {Step2} from "./step-2";
 import {Step3} from "./step-3";
 
-import {useStore} from "../../store";
-
 function ClaimBoxTl() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [hashedSecret, setHashedSecret] = useState("");
@@ -42,6 +40,7 @@ function ClaimBoxTl() {
     if (currentStepIndex === 2) {
         return (
             <Step3
+                hashedSecret={hashedSecret}
                 secret={secret}
                 path={path}
             />
