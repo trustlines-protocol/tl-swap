@@ -6,6 +6,9 @@ import {arrayify} from "@ethersproject/bytes";
 
 import config from "../config";
 
+import {Log} from "@ethersproject/abstract-provider"
+const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
+
 export async function populateCommitTx(params: {
   yourTLAddress: string;
   counterpartyTLAddress: string;
@@ -16,7 +19,6 @@ export async function populateCommitTx(params: {
   yourETHAddress: string;
   hashedSecret: string;
 }) {
-  const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
   const unsignedCommitTx = await tlSwapContract.populateTransaction.commit(
     params.yourTLAddress,
@@ -39,7 +41,6 @@ export async function generateClaimTx(params: {
   extraData: string,
   proof: string
 }) {
-  const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
 
   const unsignedClaimTx = await tlSwapContract.populateTransaction.claim(
@@ -54,10 +55,46 @@ export async function generateClaimTx(params: {
 
 
 export async function getCommitment(hashedSecret: string) {
-  const provider = new JsonRpcProvider(config.TLBC_JSON_RPC_URL);
 
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
 
   const commitment = await tlSwapContract.CommitmentsMap(hashedSecret);
   return commitment;
+}
+
+export function hasCommitmentInitiatedEvent(logs: Array<Log>) {
+  const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
+  const initiatedEvent = []
+  logs.filter((log) => {
+    try {
+      const decodedLog = tlSwapContract.interface.parseLog(log)
+      console.log('decolog', decodedLog, )
+
+      if(decodedLog.name === "CommitmentInitiatedEvent") {
+        initiatedEvent.push(log)
+      }
+
+    } catch (e) {
+      console.log('unknown event', e)
+    }
+
+  })
+
+  return initiatedEvent.length > 0
+}
+
+export async function getTLTransaction(txHash: string) {
+  const transaction = await provider.getTransactionReceipt(txHash);
+
+  console.log('privder transaction', transaction)
+  if(transaction) {
+    return {
+      blockHash: transaction.blockHash,
+      confirmations: transaction.confirmations,
+      logs: transaction.logs,
+      isSuccessfull: hasCommitmentInitiatedEvent(transaction.logs)
+    }
+  }
+
+  return null
 }
