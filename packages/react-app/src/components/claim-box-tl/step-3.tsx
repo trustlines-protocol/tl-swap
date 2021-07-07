@@ -7,7 +7,7 @@ function Step3(props: {
     hashedSecret: string,
     secret: string,
 }) {
-    const {hashedSecret} = props
+    const {hashedSecret, path, secret} = props
 
     const [appLink, setAppLink] = useState("")
 
@@ -15,16 +15,16 @@ function Step3(props: {
         (async () => {
 
             const rawTransaction = await generateClaimTx({
-                path: props.path,
+                path: path,
                 maxFee: "100000000",
                 extraData: "",
-                proof: props.secret
+                proof: secret
             })
 
-            const appLink = `https://link.trustlines.app/signClaim?from=${props.path[0]}&to=${rawTransaction.to}&data=${rawTransaction.data}&hashedSecret=${hashedSecret}`;
+            const appLink = `https://link.trustlines.app/signClaim?from=${path[0]}&to=${rawTransaction.to}&data=${rawTransaction.data}&hashedSecret=${hashedSecret}`;
             setAppLink(appLink);
         })();
-    }, []);
+    }, [path, secret, hashedSecret]);
 
     return (
         <div>

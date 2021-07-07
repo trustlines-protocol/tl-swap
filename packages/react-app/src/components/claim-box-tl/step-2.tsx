@@ -57,10 +57,10 @@ function Step2(props: {
 
 
         })();
-    }, []);
+    }, [props.hashedSecret]);
 
 
-    const {data, isLoading, isError} = useQuery(
+    const {data, isLoading} = useQuery(
         ["spend", spendableAmountArgs],
         () => {
             // @ts-expect-error

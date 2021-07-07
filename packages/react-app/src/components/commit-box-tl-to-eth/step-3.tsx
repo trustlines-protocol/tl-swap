@@ -94,7 +94,7 @@ function Step3(props: {
 
       return () => unsub()
     })();
-  }, []);
+  }, [props]);
 
   return (
     <>
