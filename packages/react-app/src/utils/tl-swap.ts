@@ -64,20 +64,19 @@ export async function getCommitment(hashedSecret: string) {
 
 export function hasCommitmentInitiatedEvent(logs: Array<Log>) {
   const tlSwapContract = new Contract(addresses.tlSwap, abis.tlSwap, provider);
-  const initiatedEvent = []
-  logs.filter((log) => {
+  const initiatedEvent = logs.filter((log) => {
     try {
       const decodedLog = tlSwapContract.interface.parseLog(log)
-      console.log('decolog', decodedLog, )
 
       if(decodedLog.name === "CommitmentInitiatedEvent") {
-        initiatedEvent.push(log)
+        return log
       }
 
     } catch (e) {
       console.log('unknown event', e)
     }
 
+    return false
   })
 
   return initiatedEvent.length > 0
@@ -86,7 +85,6 @@ export function hasCommitmentInitiatedEvent(logs: Array<Log>) {
 export async function getTLTransaction(txHash: string) {
   const transaction = await provider.getTransactionReceipt(txHash);
 
-  console.log('privder transaction', transaction)
   if(transaction) {
     return {
       blockHash: transaction.blockHash,

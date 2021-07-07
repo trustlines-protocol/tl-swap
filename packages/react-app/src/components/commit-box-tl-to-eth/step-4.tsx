@@ -1,16 +1,7 @@
 import React from "react";
 import {Button} from "../button";
 
-import {getTLTransaction} from "../../utils/tl-swap";
-import {Log} from "@ethersproject/abstract-provider"
 import {getCommitment} from "../../api/local-storage";
-
-interface ITLTransaction {
-    blockHash: string,
-    confirmations: number,
-    logs: Array<Log>,
-    isSuccessfull: boolean
-}
 
 function Step4(props: {
     yourTLAddress: string;
@@ -23,25 +14,22 @@ function Step4(props: {
     hashedSecret: string,
     txHash: string
 }) {
-    const {txHash, hashedSecret} = props
+    const {hashedSecret, yourETHAddress} = props
     const [shareLink, setShareLink] = React.useState("");
-    const [transaction, setTransaction] = React.useState<null | ITLTransaction>(null)
     const [secret, setSecret] = React.useState("")
 
     React.useEffect(() => {
         (async () => {
-            const tlTransaction = await getTLTransaction(txHash)
             const localCommitment = await getCommitment(hashedSecret)
 
             setSecret(localCommitment.secret)
 
-            setTransaction(tlTransaction)
 
-            const shareLink = `${process.env.PUBLIC_URL}/commit?hashed-secret=${hashedSecret}&eth-address=${props.yourETHAddress}`;
+            const shareLink = `${process.env.PUBLIC_URL}/commit?hashed-secret=${hashedSecret}&eth-address=${yourETHAddress}`;
             setShareLink(shareLink);
 
         })();
-    }, []);
+    }, [hashedSecret, yourETHAddress]);
 
     const handleClickCopy = async () => {
         await navigator.clipboard.writeText(shareLink);
