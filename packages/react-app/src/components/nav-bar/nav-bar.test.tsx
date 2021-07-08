@@ -5,6 +5,7 @@ import { NavBar } from "./nav-bar";
 test("render NavBar with title, switch bar and connect button", async () => {
   render(<NavBar />);
 
+  await screen.findByText(/offers/i);
   await screen.findByText(/tl swap/i);
   await screen.findByText(/commit/i);
   await screen.findByText(/claim/i);
@@ -12,5 +13,5 @@ test("render NavBar with title, switch bar and connect button", async () => {
   await screen.findByText(/connect wallet/i);
 
   const buttons = await screen.findAllByRole("button");
-  expect(buttons).toHaveLength(4);
+  expect(buttons).toHaveLength(5);
 });

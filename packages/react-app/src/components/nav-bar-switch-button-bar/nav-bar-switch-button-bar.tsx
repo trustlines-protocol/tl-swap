@@ -6,6 +6,10 @@ import { useStore } from "../../store";
 
 const SWITCH_BUTTON_BAR_ITEMS = [
   {
+    label: "Offers",
+    value: "offers",
+  },
+  {
     label: "Commit",
     value: "commit",
   },
@@ -31,6 +35,7 @@ function NavBarSwitchButtonBar() {
     setActiveNavBarSwitchItem(item.value);
   };
 
+  console.log('switch button')
   return (
     <SwitchButtonBar
       items={SWITCH_BUTTON_BAR_ITEMS.map((item) => ({

@@ -1,6 +1,6 @@
 import create from "zustand";
 
-export type ActiveNavBarSwitchItem = "commit" | "claim" | "history";
+export type ActiveNavBarSwitchItem = "offers" | "commit" | "claim" | "history";
 
 export type ActiveCommitBoxSwitchItem = "tlToEth" | "ethToTl";
 export type ActiveClaimBoxSwitchItem = "TL" | "ETH";
