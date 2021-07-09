@@ -1,58 +1,73 @@
 import React from "react";
 import Modal from "react-modal";
 
-import { NavBar } from "./components/nav-bar";
-import { CommitBox } from "./components/commit-box";
-import { ClaimBox } from "./components/claim-box";
-import { OffersBox } from "./components/offers-box";
+import {NavBar} from "./components/nav-bar";
+import {CommitBox} from "./components/commit-box";
+import {ClaimBox} from "./components/claim-box";
+import {OffersBox} from "./components/offers-box";
 
-import { useStore } from "./store";
-import { initializeApp } from "firebase/app"
-import config from "./config";
+import {useStore} from "./store";
+
+import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
+import {CommitBoxEthToTl} from "./components/commit-box-eth-to-tl";
+import {CommitBoxTlToEth} from "./components/commit-box-tl-to-eth";
+import {ClaimBoxTl} from "./components/claim-box-tl";
+import {ClaimBoxEth} from "./components/claim-box-eth";
 
 Modal.setAppElement("#root");
 
-initializeApp({
-  apiKey: config.FIREBASE_API_KEY,
-  authDomain: config.FIREBASE_AUTH_DOMAIN,
-  databaseURL: config.FIREBASE_DATABASE_URL,
-  projectId: config.FIREBASE_PROJECT_ID,
-  storageBucket: config.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: config.FIREBASE_MESSAGINGSENDER_ID,
-  appId: config.FIREBASE_APP_ID,
-  measurementId: config.FIREBASE_MEASUREMENT_ID
-});
-
 
 function App() {
-  const activeNavBarSwitchItem = useStore(
-    (state) => state.activeNavBarSwitchItem
-  );
-  const setActiveNavBarSwitchItem = useStore(
-    (state) => state.setActiveNavBarSwitchItem
-  );
-  const setActiveCommitBoxSwitchItem = useStore(
-    (state) => state.setActiveCommitBoxSwitchItem
-  );
+    // const activeNavBarSwitchItem = useStore(
+    //     (state) => state.activeNavBarSwitchItem
+    // );
+    // const setActiveNavBarSwitchItem = useStore(
+    //     (state) => state.setActiveNavBarSwitchItem
+    // );
+    // const setActiveCommitBoxSwitchItem = useStore(
+    //     (state) => state.setActiveCommitBoxSwitchItem
+    // );
 
-  React.useEffect(() => {
-    const url = new URL(window.location.href);
+    // React.useEffect(() => {
+    //     const url = new URL(window.location.href);
+    //
+    //     if (url.pathname === "/commit") {
+    //         setActiveNavBarSwitchItem("commit");
+    //         setActiveCommitBoxSwitchItem("ethToTl");
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
 
-    if (url.pathname === "/commit") {
-      setActiveNavBarSwitchItem("commit");
-      setActiveCommitBoxSwitchItem("ethToTl");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return (
+        <BrowserRouter>
+            <nav>
+                <NavBar/>
+            </nav>
 
-  return (
-    <div className="bg-gray-100 h-screen">
-      <NavBar />
-      {activeNavBarSwitchItem === "offers" ? <OffersBox /> : null}
-      {activeNavBarSwitchItem === "commit" ? <CommitBox /> : null}
-      {activeNavBarSwitchItem === "claim" ? <ClaimBox /> : null}
-    </div>
-  );
+            <Routes>
+                <Route path="/" element={<OffersBox/>}/>
+
+                <Route path="/offers" element={<OffersBox/>}/>
+                <Route path="commit" element={<CommitBox/>}>
+                    <Route path="tlToEth" element={<CommitBoxTlToEth/>}/>
+                    <Route path="ethToTl" element={<CommitBoxEthToTl/>}/>
+                </Route>
+                <Route path="claim" element={<ClaimBox/>}>
+                    <Route path="tl" element={<ClaimBoxTl/>}/>
+                    <Route path="eth" element={<ClaimBoxEth/>}/>
+                </Route>
+                <Route path="/history" element={null}/>
+            </Routes>
+        </BrowserRouter>
+    )
+    // return (
+    //   <div className="bg-gray-100 h-screen">
+    //     <NavBar />
+    //     {activeNavBarSwitchItem === "offers" ? <OffersBox /> : null}
+    //     {activeNavBarSwitchItem === "commit" ? <CommitBox /> : null}
+    //     {activeNavBarSwitchItem === "claim" ? <ClaimBox /> : null}
+    //   </div>
+    // );
 }
 
 export default App;

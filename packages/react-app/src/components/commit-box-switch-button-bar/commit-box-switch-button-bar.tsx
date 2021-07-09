@@ -3,6 +3,7 @@ import React from "react";
 import { SwitchButtonBar, Item } from "../switch-button-bar";
 
 import { useStore } from "../../store";
+import {useNavigate, useLocation} from "react-router-dom"
 
 const SWITCH_BUTTON_BAR_ITEMS = [
   {
@@ -16,15 +17,11 @@ const SWITCH_BUTTON_BAR_ITEMS = [
 ];
 
 function CommitBoxSwitchButtonBar() {
-  const activeCommitBoxSwitchItem = useStore(
-    (state) => state.activeCommitBoxSwitchItem
-  );
-  const setActiveCommitBoxSwitchItem = useStore(
-    (state) => state.setActiveCommitBoxSwitchItem
-  );
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleClickItem = (item: Item) => {
-    setActiveCommitBoxSwitchItem(item.value);
+    navigate(item.value)
   };
 
   return (
@@ -32,7 +29,7 @@ function CommitBoxSwitchButtonBar() {
       items={SWITCH_BUTTON_BAR_ITEMS.map((item) => ({
         ...item,
         onClick: handleClickItem,
-        isActive: activeCommitBoxSwitchItem === item.value,
+        isActive: location.pathname.includes(item.value),
       }))}
       onClickItem={handleClickItem}
     />

@@ -1,8 +1,6 @@
 import React from "react";
-
 import { SwitchButtonBar, Item } from "../switch-button-bar";
-
-import { useStore } from "../../store";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const SWITCH_BUTTON_BAR_ITEMS = [
   {
@@ -11,11 +9,11 @@ const SWITCH_BUTTON_BAR_ITEMS = [
   },
   {
     label: "Commit",
-    value: "commit",
+    value: "commit/tlToEth",
   },
   {
     label: "Claim",
-    value: "claim",
+    value: "claim/TL",
   },
   {
     label: "History",
@@ -24,23 +22,20 @@ const SWITCH_BUTTON_BAR_ITEMS = [
 ];
 
 function NavBarSwitchButtonBar() {
-  const activeNavBarSwitchItem = useStore(
-    (state) => state.activeNavBarSwitchItem
-  );
-  const setActiveNavBarSwitchItem = useStore(
-    (state) => state.setActiveNavBarSwitchItem
-  );
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleClickItem = (item: Item) => {
-    setActiveNavBarSwitchItem(item.value);
+    navigate(item.value);
   };
 
-  console.log('switch button')
+  const activeEntry = location.pathname !== '/' ? location.pathname : "offers"
+
   return (
     <SwitchButtonBar
       items={SWITCH_BUTTON_BAR_ITEMS.map((item) => ({
         ...item,
-        isActive: activeNavBarSwitchItem === item.value,
+        isActive: activeEntry.includes(item.value) ,
       }))}
       onClickItem={handleClickItem}
     />

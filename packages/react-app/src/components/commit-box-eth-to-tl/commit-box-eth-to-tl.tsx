@@ -30,7 +30,6 @@ function CommitBoxEthToTl() {
   const { provider } = useWeb3Modal({ autoLoad: true });
 
   const connectedETHAddress = useStore((state) => state.connectedETHAddress);
-
   const getTlCommitment = async (hashedSecret:string) => {
     const commitment = await getCommitment(hashedSecret)
     setTlCommitment(commitment)

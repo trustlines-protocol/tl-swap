@@ -25,7 +25,7 @@ function Step4(props: {
             setSecret(localCommitment.secret)
 
 
-            const shareLink = `${process.env.PUBLIC_URL}/commit?hashed-secret=${hashedSecret}&eth-address=${yourETHAddress}`;
+            const shareLink = `${process.env.PUBLIC_URL}/commit/ethToTl?hashed-secret=${hashedSecret}&eth-address=${yourETHAddress}`;
             setShareLink(shareLink);
 
         })();

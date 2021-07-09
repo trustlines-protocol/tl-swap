@@ -1,8 +1,7 @@
 import React from "react";
 
 import { SwitchButtonBar, Item } from "../switch-button-bar";
-
-import { useStore } from "../../store";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const SWITCH_BUTTON_BAR_ITEMS = [
   {
@@ -16,15 +15,11 @@ const SWITCH_BUTTON_BAR_ITEMS = [
 ];
 
 function ClaimBoxSwitchButtonBar() {
-  const activeClaimBoxSwitchItem = useStore(
-    (state) => state.activeClaimBoxSwitchItem
-  );
-  const setActiveClaimBoxSwitchItem = useStore(
-    (state) => state.setActiveClaimBoxSwitchItem
-  );
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleClickItem = (item: Item) => {
-    setActiveClaimBoxSwitchItem(item.value);
+    navigate(item.value)
   };
 
   return (
@@ -32,7 +27,7 @@ function ClaimBoxSwitchButtonBar() {
       items={SWITCH_BUTTON_BAR_ITEMS.map((item) => ({
         ...item,
         onClick: handleClickItem,
-        isActive: activeClaimBoxSwitchItem === item.value,
+        isActive: location.pathname.includes(item.value),
       }))}
       onClickItem={handleClickItem}
     />
