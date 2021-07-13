@@ -15,19 +15,19 @@ interface Offer {
     ethAmount: string;
 }
 
-function RenderPathInfo({pathInfo}: {pathInfo: null | {capacity: string, path: Array<string>}}) {
-    if(pathInfo === null) {
+function RenderPathInfo({pathInfo}: { pathInfo: null | { capacity: string, path: Array<string> } }) {
+    if (pathInfo === null) {
         return null
     }
 
     const {capacity, path} = pathInfo
     let hopsText = null
 
-    if(path.length === 2) {
+    if (path.length === 2) {
         hopsText = "direct path"
     }
 
-    if(path.length > 2) {
+    if (path.length > 2) {
         const hops = path.length - 2
         hopsText = `${hops} hop(s)`
     }
@@ -42,11 +42,10 @@ function RenderPathInfo({pathInfo}: {pathInfo: null | {capacity: string, path: A
 function Offer({offer, pathTo}: { offer: Offer, pathTo?: string }) {
     const [hasPath, setHasPath] = useState(false)
     const [pathInfo, setPathInfo] = useState(null)
-
-    console.log('offer', pathTo, offer)
+    const [expand, setExpand] = useState(false)
     useEffect(() => {
         const findPath = async () => {
-            if(pathTo) {
+            if (pathTo) {
                 try {
                     const amountAndPath = await getSpendableAmountAndPath(offer.tlAddress, pathTo, offer.network)
 
@@ -63,25 +62,37 @@ function Offer({offer, pathTo}: { offer: Offer, pathTo?: string }) {
                 }
 
 
-
-
             }
 
         }
 
         findPath()
     }, [pathTo, offer.tlAddress, offer.network])
-    return <>
-        <div>
-            {offer.expires} | {offer.tlAddress} | {offer.tlAmount} | {offer.ethAmount}
-        </div>
-        <div>
-            {hasPath && <RenderPathInfo pathInfo={pathInfo} />}
-        </div>
-    </>
+    return (
+        <>
+                <div className={`table-row  group hover:bg-red-200 hover:cursor-pointer ${expand ? "bg-red-200" : ""}`} onClick={() => setExpand(!expand)}>
+                    <div className={"table-cell p-2 group-hover:bg-red-200 group-hover:rounded-tl-lg group-hover:rounded-bl-lg"}>{offer.expires}</div>
+                    <div className={"table-cell text-sm p-2"}>{offer.tlAddress}</div>
+                    <div className={"table-cell p-2"}>{offer.tlAmount}</div>
+                    <div className={"table-cell p-2"}>{offer.ethAmount}</div>
+                    <div className={"table-cell p-2 group-hover:bg-red-200 group-hover:rounded-tr-lg group-hover:rounded-br-lg"}>
+                        {hasPath && <RenderPathInfo pathInfo={pathInfo}/>}
+                    </div>
+                </div>
+
+            {expand && (
+                <div className={`table-row ${expand ? "bg-red-200" : ""}`}>
+                    <div className={"table-cell"}>more info</div>
+                </div>
+            )
+            }
+        </>
+
+    )
+
 }
 
-function OfferForm({onSubmitted}:{onSubmitted: (id: string) => void}) {
+function OfferForm({onSubmitted}: { onSubmitted: (id: string) => void }) {
     const [expires, setExpires] = useState("")
     const [yourTLAddress, setYourTLAddress] = useState("")
     const [showQrCodeScanner, setShowQrCodeScanner] = React.useState<boolean>(
@@ -122,7 +133,7 @@ function OfferForm({onSubmitted}:{onSubmitted: (id: string) => void}) {
             ethAmount: ethAmount
         });
 
-        if(docRef.id) {
+        if (docRef.id) {
             onSubmitted(docRef.id)
         }
 
@@ -136,48 +147,68 @@ function OfferForm({onSubmitted}:{onSubmitted: (id: string) => void}) {
                 onRequestClose={() => setShowQrCodeScanner(false)}
                 onScan={handleScannedData}
             />
-                <LabeledInput
-                    id="yourTLAddressInput"
-                    label="Your TL Address"
-                    value={yourTLAddress}
-                    onChangeInputValue={(value) => setYourTLAddress(value)}
+            <LabeledInput
+                id="yourTLAddressInput"
+                label="Your TL Address"
+                value={yourTLAddress}
+                onChangeInputValue={(value) => setYourTLAddress(value)}
 
-                    withScanButton
-                    onClickScanButton={() => {
-                        setShowQrCodeScanner(true);
-                    }}
-                />
-                <CurrencyNetworkSelect
-                    currencyNetworks={data}
-                    isLoading={isLoading}
-                    onChangeNetwork={(value) => setNetwork(value)}
-                />
-                <LabeledInput
-                    id="tlAmount"
-                    label="Total TL Amount"
-                    value={tlAmount}
-                    onChangeInputValue={value => setTLAmount(value)}
-                    type="number"
-                    min={0}
-                />
-                <LabeledInput
-                    id="ethAmount"
-                    label="Total ETH Amount"
-                    value={ethAmount}
-                    onChangeInputValue={(value) => setEthAmount(value)}
-                    type="number"
-                    min={0}
-                />
+                withScanButton
+                onClickScanButton={() => {
+                    setShowQrCodeScanner(true);
+                }}
+            />
+            <CurrencyNetworkSelect
+                currencyNetworks={data}
+                isLoading={isLoading}
+                onChangeNetwork={(value) => setNetwork(value)}
+            />
+            <LabeledInput
+                id="tlAmount"
+                label="Total TL Amount"
+                value={tlAmount}
+                onChangeInputValue={value => setTLAmount(value)}
+                type="number"
+                min={0}
+            />
+            <LabeledInput
+                id="ethAmount"
+                label="Total ETH Amount"
+                value={ethAmount}
+                onChangeInputValue={(value) => setEthAmount(value)}
+                type="number"
+                min={0}
+            />
 
-                <LabeledInput
-                    id="expires"
-                    label="Offer valid till"
-                    value={expires}
-                    onChangeInputValue={(value) => setExpires(value)}
-                    type="date"
-                />
+            <LabeledInput
+                id="expires"
+                label="Offer valid till"
+                value={expires}
+                onChangeInputValue={(value) => setExpires(value)}
+                type="date"
+            />
 
             <button onClick={onSubmit}>submit</button>
+
+        </>
+
+    )
+}
+
+function OffersTable({offers, counterPartyAddress}: { offers: null | Array<Offer>, counterPartyAddress: string }) {
+    return (
+        <>
+            <div className={"table w-full"}>
+                <div className={"table-header-group font-bold"}>
+                    <div className={"table-cell p-2"}>Valid till</div>
+                    <div className={"table-cell p-2"}>Currency network</div>
+                    <div className={"table-cell p-2"}>Tl Amount</div>
+                    <div className={"table-cell p-2"}>Eth Amount</div>
+                    <div className={"table-cell p-2"}></div>
+                </div>
+
+                {offers && offers.map(offer => <Offer offer={offer} pathTo={counterPartyAddress}/>)}
+            </div>
 
         </>
 
@@ -219,20 +250,20 @@ function OffersBox() {
             }} className={"btn"}>Create offer
             </button>
             {offers && offers.length === 0 && <div>No offers available. Create one?</div>}
-            {offers && offers.map(offer => <Offer offer={offer} pathTo={counterPartyAddress}/>)}
+            <OffersTable offers={offers} counterPartyAddress={counterPartyAddress}/>
 
         </>
     )
 
 
     if (displayForm) {
-        content = <OfferForm onSubmitted={() => setDisplayForm(false)} />
+        content = <OfferForm onSubmitted={() => setDisplayForm(false)}/>
     }
     return (
         <div className="container mx-auto">
             <div
                 className="
-          max-w-md mx-auto flex flex-col items-center mt-10 rounded border-gray-200
+         mx-auto flex flex-col items-center mt-10 rounded border-gray-200
           border p-2 shadow-md gap-y-4
         "
             >
